@@ -5,13 +5,11 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="test">
-      <button id="test-data">TEST DATA</button>
-      <button id="test">TEST</button>
-      <button id="test-score">Score <span class="test-score">0</span></button>
-      <button id="test-current">
-        Current <span class="test-current">0</span>
-      </button>
+    <div>
+      <div class="winner"></div>
+      <div class="current-player">0</div>
+      <div class="test">
+
     </div>
     <div class="gameplay">
       <div class="player player1">
@@ -32,18 +30,27 @@
       </div>
       <div class="buttons-panel">
         <div class="button"><button id="new-game">NEW GAME</button></div>
-        <div class="button">
-          <button id="dice">
-            <div class="dot" id="dot1">⚫</div>
-            <div class="dot" id="dot2">⚫</div>
-            <div class="dot" id="dot3">⚫</div>
-            <div class="dot" id="dot4">⚫</div>
-            <div class="dot" id="dot5">⚫</div>
-            <div class="dot" id="dot6">⚫</div>
-            <div class="dot" id="dot7">⚫</div>
-          </button>
+        <div class="dices">
+          <div id="black-dice" class="dice">
+            <div class="dot0" id="dot01">🟠</div>
+            <div class="dot0" id="dot02">🟠</div>
+            <div class="dot0" id="dot03">🟠</div>
+            <div class="dot0" id="dot04">🟠</div>
+            <div class="dot0" id="dot05">🟠</div>
+            <div class="dot0" id="dot06">🟠</div>
+            <div class="dot0" id="dot07">🟠</div>
+          </div>
+          <div id="white-dice" class="dice">
+            <div class="dot1" id="dot11">🔵</div>
+            <div class="dot1" id="dot12">🔵</div>
+            <div class="dot1" id="dot13">🔵</div>
+            <div class="dot1" id="dot14">🔵</div>
+            <div class="dot1" id="dot15">🔵</div>
+            <div class="dot1" id="dot16">🔵</div>
+            <div class="dot1" id="dot17">🔵</div>
+          </div>
         </div>
-        <div class="button"><button id="roll-dice">ROLL DICE</button></div>
+        <div class="button"><button id="roll-dice">ROLL DICES</button></div>
         <div class="button"><button id="hold">HOLD</button></div>
       </div>
     </div>

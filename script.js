@@ -1,114 +1,167 @@
 "use strict";
-let score = document.querySelectorAll(".score");
-//let scorePlayer2 = document.querySelector(".score.right");
-let currentNumber = document.querySelectorAll(".current-number");
-//let currentNumber2 = document.querySelector(".current.right .current-number");
-let dice = document.querySelector("#dice");
+// buttons
 let rollDiceBtn = document.querySelector("#roll-dice");
 let holdBtn = document.querySelector("#hold");
 let newGameBtn = document.querySelector("#new-game");
-//
-//TEST
-let testScore = document.querySelector(".test-score");
-let testCurrent = document.querySelector(".test-current");
-//
-//
-// TEST FUNCTIONS
+// points
+let score = document.querySelectorAll(".score");
+let dices = document.querySelectorAll(".dice");
+// settings
+let settings = {
+  count: 1,
+  adjustmentValue: 3,
+  goal: 100,
+  // players: [prompt("Player 1"), prompt("Player 2")],
+};
+let selected = "rgba(255, 255, 255, 0.6)";
+let unSelected = "rgba(255, 255, 255, 0.2)";
+let currentPlayer = document.querySelector(".current-player");
+let players = document.querySelectorAll(".player");
 
-function diceView(x) {
-  dice.style.visibility = "hidden";
-  let dots = document.querySelectorAll(".dot");
-  for(let i=0; i<dots.length; i++) dots[i].style.visibility = "hidden";
-  function showDots(array){
-    dice.style.visibility = "visible";
-    for(let i=0; i<array.length; i++) dots[array[i]].style.visibility = "visible";
-  };
-  switch (x) {
-    case 1:   
+function diceView(diceId, numberOnDice) {
+  let dots = document.querySelectorAll(".dot" + String(diceId));
+  for (let i = 0; i < dots.length; i++) dots[i].style.visibility = "hidden";
+  function showDots(array) {
+    dices[diceId].visibility = "visible";
+    for (let i = 0; i < array.length; i++)
+      dots[array[i]].style.visibility = "visible";
+  }
+  switch (numberOnDice) {
+    case 1:
       showDots([6]);
       break;
     case 2:
-      showDots([0,5]);
+      showDots([0, 5]);
       break;
     case 3:
-      showDots([2,3,6]);
+      showDots([2, 3, 6]);
       break;
     case 4:
-      showDots([0,2,3,5]);
+      showDots([0, 2, 3, 5]);
       break;
     case 5:
-      showDots([0,2,3,5,6]);
+      showDots([0, 2, 3, 5, 6]);
       break;
     case 6:
-      showDots([0,1,2,3,4,5]);
+      showDots([0, 1, 2, 3, 4, 5]);
       break;
   }
 }
 
-document.querySelector("#test").addEventListener("click", function () {
-  let number = Math.trunc(Math.random() * 6 + 1);
-  console.log(number);
-  diceView(number);
-});
-
-let test = function () {
-  score[0].textContent = 23;
-  score[1].textContent = 4;
-  currentNumber[0].textContent = 5;
-  currentNumber[1].textContent = 6;
-};
-
-document.querySelector("#test-data").addEventListener("click", test);
-
-//
-//
-//
-// THE GAME
-//
-//
-//
 let startGame = function () {
-  score[0].textContent = 0;
-  score[1].textContent = 0;
-  currentNumber[0].textContent = 0;
-  currentNumber[1].textContent = 0;
-  dice.value = 0;
-  testScore.textContent = 0;
-  testCurrent.textContent = 0;
+  for (let i = 0; i < 2; i++) {
+    settings.count = 0;
+    score[i].textContent = 0;
+    document.querySelectorAll(".current-number")[i].textContent = 0;
+    dices[i].value = 0;
+    diceView(i, 0);
+  }
+  btnOff(holdBtn);
 };
-startGame();
 
+// random number adjustment
+let numberOnDice = function () {
+  let initialNumber = Math.trunc(Math.random() * 6 + 1);
+  let adjustedNumber = 0;
+  if (initialNumber == 1) {
+    settings.count % settings.adjustmentValue == 0
+      ? (adjustedNumber = Math.trunc(Math.random() * 5 + 2))
+      : (adjustedNumber = initialNumber);
+    settings.count += 1;
+  } else {
+    adjustedNumber = initialNumber;
+  }
+  return adjustedNumber;
+};
+// disable/enable buttons
+let btnOn = function (button) {
+  button.disabled = false;
+  button.style = selected;
+};
+let btnOff = function (button) {
+  button.disabled = true;
+  button.style = unSelected;
+};
 // start new game
-newGameBtn.addEventListener("click", function(){
+newGameBtn.addEventListener("click", function () {
   startGame();
-  let players = document.querySelectorAll(".player");
-  let activePlayer = players[0];
-  activePlayer.style.backgroundColor = "rgba(255, 255, 255, 0.6)";
-  rollTheDice(activePlayer); 
-  holdScore(activePlayer);
-
+  let activePlayer = defineActivePlayer();
+  activePlayer.style.backgroundColor = selected;
 });
 // roll the dice
-let rollTheDice = function(player){
+function defineActivePlayer() {
+  let turn = currentPlayer.textContent;
+  let activePlayer = players[turn];
+  return activePlayer;
+}
+function newActivePlayer() {
+  Number(currentPlayer.textContent) !== 0
+    ? (currentPlayer.textContent = 0)
+    : (currentPlayer.textContent = 1);
+  btnOff(holdBtn);
+}
+
 rollDiceBtn.addEventListener("click", function () {
-  let number = Math.trunc(Math.random() * 6 + 1);
-  console.log(number);
-  diceView(number);
-  if (number != 1) {
-    player.querySelector(".current-number").textContent = Number(player.querySelector(".current-number").textContent) + number;
+  dices[0].style.visibility = "visible";
+  dices[1].style.visibility = "visible";
+  let activePlayer = defineActivePlayer();
+  let number1 = numberOnDice();
+  console.log(number1);
+  let number2 = numberOnDice();
+  console.log(number2);
+  diceView(0, number1);
+  diceView(1, number2);
+  if (number1 !== 1 && number2 !== 1) {
+    if (number1 === number2) {
+      activePlayer.querySelector(".current-number").textContent =
+        Number(activePlayer.querySelector(".current-number").textContent) +
+        number1 * 4;
+    } else {
+      activePlayer.querySelector(".current-number").textContent =
+        Number(activePlayer.querySelector(".current-number").textContent) +
+        number1 +
+        number2;
+    }
+    holdBtn.disabled = false;
+    holdBtn.style = selected;
   } else {
-    player.querySelector(".current-number").textContent = 0;
+    if (number1 == 1) {
+      activePlayer.querySelector(".score").textContent = 0;
+    }
+    activePlayer.querySelector(".current-number").textContent = 0;
+
+    newActivePlayer();
+    activePlayer.style.backgroundColor = unSelected;
+    players[currentPlayer.textContent].style.backgroundColor = selected;
   }
 });
-}
 
 // hold
-let holdScore = function(player){
-holdBtn.addEventListener("click", function () {
-  let currentScore = Number(player.querySelector(".current-number").textContent);
-  let totalScore = Number(player.querySelector(".score").textContent);
-  player.querySelector(".score").textContent = totalScore + currentScore;
-  player.querySelector(".current-number").textContent = 0;
-
-});
+function displayWinner(winner) {
+  winner.style.backgroundColor = "rgba(0, 255, 250, 0.6)";
+  winner.style.color = "rgba(255, 255, 255)";
+  btnOff(rollDiceBtn);
+  btnOff(holdBtn);
+  document.querySelector(".winner").textContent = `${
+    winner.querySelector(".name").textContent
+  } wins!`;
 }
+
+holdBtn.addEventListener("click", function () {
+  let activePlayer = defineActivePlayer();
+  let currentScore = Number(
+    activePlayer.querySelector(".current-number").textContent
+  );
+  let totalScore = Number(activePlayer.querySelector(".score").textContent);
+  activePlayer.querySelector(".score").textContent = totalScore + currentScore;
+  activePlayer.querySelector(".current-number").textContent = 0;
+  if (
+    Number(activePlayer.querySelector(".score").textContent) >= settings.goal
+  ) {
+    displayWinner(activePlayer);
+  } else {
+    newActivePlayer();
+    activePlayer.style.backgroundColor = unSelected;
+    players[currentPlayer.textContent].style.backgroundColor = selected;
+  }
+});
